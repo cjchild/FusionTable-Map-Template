@@ -164,12 +164,9 @@
         self.whereClause = self.locationColumn + " not equal to ''";
         
         //-----custom filters-----
-		var type_column = "'facilities'";
+		var type_column = "'playground'";
 		if ( $("#rbType1").is(':checked')) self.whereClause += " AND " + type_column + "=1";
-		if ( $("#rbType2").is(':checked')) self.whereClause += " AND " + type_column + ">1";
-		if ( $("#rbType3").is(':checked')) self.whereClause += " AND 'facilities' >= '2' AND 'facilities' <= '3'";
-		if ( $("#rbType4").is(':checked')) self.whereClause += " AND " + type_column + "=4";
-		if ( $("#rbType5").is(':checked')) self.whereClause += " AND " + type_column + "=5";
+		if ( $("#rbType2").is(':checked')) self.whereClause += " AND " + type_column + "=0";
         //-----end of custom filters-----
 
         self.getgeoCondition(address, function (geoCondition) {
