@@ -93,12 +93,13 @@
                 select: self.locationColumn,
                 where: whereClause
             },
-            styleId: 2,
-            templateId: 2
+            styleId: 3,
+            templateId: 3
         });
         self.fusionTable = self.searchrecords;
         self.searchrecords.setMap(map);
         self.getCount(whereClause);
+		self.getList(whereClause);
     };
 
 
@@ -163,6 +164,10 @@
         self.whereClause = self.locationColumn + " not equal to ''";
         
         //-----custom filters-----
+		var type_column = "'playground'";
+		if ( $("#rbType1").is(':checked')) self.whereClause += " AND " + type_column + ">0";
+		if ( $("#rbType2").is(':checked')) self.whereClause += " AND " + type_column + "=2";
+	    	if ( $("#rbType3").is(':checked')) self.whereClause += " AND " + type_column + "=1";
         //-----end of custom filters-----
 
         self.getgeoCondition(address, function (geoCondition) {
@@ -298,7 +303,47 @@
         });
         $("#result_box").fadeIn();
     };
+	
+	MapsLib.prototype.getList = function(whereClause) {
+		var self = this;
+		var selectColumns = 'name, address, suburb ';
 
+		self.query({ 
+		  select: selectColumns, 
+		  where: whereClause 
+		}, function(response) { 
+		  self.displayList(response);
+		});
+	  },
+
+	  MapsLib.prototype.displayList = function(json) {
+		var self = this;
+
+		var data = json['rows'];
+		var template = '';
+
+		var results = $('#results_list');
+		results.hide().empty(); //hide the existing list and empty it out first
+
+		if (data == null) {
+		  //clear results list
+		  results.append("<li><span class='lead'>No results found</span></li>");
+		}
+		else {
+		  for (var row in data) {
+			template = "\
+			  <div class='row-fluid item-list'>\
+				<div class='span12'>\
+				  <strong>" + data[row][0] + "</strong>\ " + data[row][1] + "\
+				  <br />\
+				  " + data[row][2] + "\
+				</div>\
+			  </div>";
+			results.append(template);
+		  }
+		}
+		results.fadeIn();
+	},
     MapsLib.prototype.addCommas = function (nStr) {
         nStr += '';
         x = nStr.split('.');
